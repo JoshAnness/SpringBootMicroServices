@@ -2,6 +2,7 @@ package com.plantplaces.service;
 
 import java.util.List;
 
+import com.plantplaces.dao.ISpecimenDAO;
 import com.plantplaces.dto.PlantDTO;
 import com.plantplaces.dto.SpecimenDTO;
 
@@ -23,7 +24,7 @@ public interface ISpecimenService {
 	 * Persist the given DTO
 	 * @param specimenDTO
 	 */
-	void save(SpecimenDTO specimenDTO);
+	boolean save(SpecimenDTO specimenDTO) throws Exception;
 
 	/**
 	 * Return a list of plants that contain this String.
@@ -31,5 +32,9 @@ public interface ISpecimenService {
 	 * @return a list of matching plants
 	 */
 	List<PlantDTO> fetchPlants(String string);
+
+	void setSpecimenDAO(ISpecimenDAO specimenDAO);
+
+	ISpecimenDAO getSpecimenDAO();
 
 }
