@@ -9,7 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class JUnitAnnotationExamples {
-
+		/*
 		@BeforeClass
 		public static void setupEverything() {
 			int i = 1 + 1;
@@ -40,5 +40,5 @@ public class JUnitAnnotationExamples {
 		@After
 		public void teardownBeforeEachTest() {
 			int i = 1 + 1;
-		}
+		}*/
 }

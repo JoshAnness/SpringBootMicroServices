@@ -1,5 +1,7 @@
 package com.plantplaces;
 
+import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
 
@@ -17,8 +19,13 @@ import com.plantplaces.dto.PlantDTO;
 import com.plantplaces.dto.SpecimenDTO;
 import com.plantplaces.service.ISpecimenService;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 @Controller
 public class PlantPlacesController {
+	
+	Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	private ISpecimenService specimenService;
@@ -43,6 +50,7 @@ public class PlantPlacesController {
 	
 	@RequestMapping(value="/start", method=RequestMethod.GET)
 	public String read(Model model) {
+		log.info("User has entered the /start endpoint");
 		model.addAttribute("specimenDTO", new SpecimenDTO());
 		return "start";
 	}
@@ -92,19 +100,28 @@ public class PlantPlacesController {
 		return "start";
 	}
 	
-	@RequestMapping("/searchPlants1")
-	public String searchPlants(@RequestParam(value="searchTerm", required=false, defaultValue="") String searchTerm) {
-		String enhancedTerm = searchTerm + "";
+	@RequestMapping("/searchPlants")
+	public ModelAndView searchPlants(@RequestParam(value="searchTerm", required=false, defaultValue="") String searchTerm) {
+		log.debug("entering search plants");
+		ModelAndView modelAndView = new ModelAndView();
+		List<PlantDTO> plants = new ArrayList<PlantDTO>();
 		try {
-			List<PlantDTO> fetchPlants = specimenService.fetchPlants(searchTerm);
+			plants = specimenService.fetchPlants(searchTerm);
+			modelAndView.setViewName("plantResults");
+			if (plants.size() == 0) {
+				log.warn("Received 0 results for search string: " + searchTerm);
+			}
 		} catch (Exception e) {
+			log.error("Error happened in searchPlants endpoint", e);
 			e.printStackTrace();
-			return "error";
+			modelAndView.setViewName("error");
 		}
-		return "start";
+		modelAndView.addObject("plants", plants);
+		log.debug("existing search Plants");
+		return modelAndView;
 	}
 	
-	@RequestMapping("/searchPlants")
+	@RequestMapping("/searchPlantsAll")
 	public String searchPlantsAll(@RequestParam Map<String,String> requestParams) {
 		int params = requestParams.size();
 		requestParams.get("searchTerm");
